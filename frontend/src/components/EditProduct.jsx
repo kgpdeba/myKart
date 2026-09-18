@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance.js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { productValidateSchema } from '../validators/productValidate';
@@ -12,7 +12,6 @@ const EditProduct = () => {
     resolver: yupResolver(productValidateSchema)
   })
   const id = useSelector((state) => state.app.id)
-  const accessToken = localStorage.getItem("accessToken")
   const navigate = useNavigate()
   const [file, setFile] = useState("");
   const [prevImage, setPrevImage] = useState("");
@@ -20,11 +19,7 @@ const EditProduct = () => {
   const getProduct = async () => {
     try {
 
-      const res = await axios.get(`http://localhost:8000/product/getById/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
+      const res = await axiosInstance.get(`/product/getById/${id}`)
       console.log("product recived", res);
       const name = res.data.data.name
       const category = res.data.data.category
@@ -57,9 +52,8 @@ const EditProduct = () => {
     console.log("new data", formData);
 
     try {
-      const res = await axios.put(`http://localhost:8000/product/update/${id}`, formData, {
+      const res = await axiosInstance.put(`/product/update/${id}`, formData, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "multipart/form-data"
         }
       })
@@ -68,7 +62,7 @@ const EditProduct = () => {
       navigate("/seller")
 
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || "Failed to update product")
     }
   }
 

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axiosInstance, { API_BASE_URL } from '../api/axiosInstance.js'
 import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -21,7 +21,6 @@ const loadScript = (src) => {
 }
 
 const Buyer = () => {
-    const accessToken = localStorage.getItem("accessToken")
     const dispatch = useDispatch()
 
     const [text, setText] = useState("")
@@ -75,13 +74,9 @@ const Buyer = () => {
             return
         }
 
-        const { data: { key } } = await axios.get("http://localhost:8000/api/payment/getKey")
+        const { data: { key } } = await axiosInstance.get("/api/payment/getKey")
         console.log(key)
-        const { data: { data } } = await axios.post(`http://localhost:8000/payment/paymentCheckout/${id}`, { amount }, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
+        const { data: { data } } = await axiosInstance.post(`/payment/paymentCheckout/${id}`, { amount });
         console.log('data', data)
         const options = {
             key: key,
@@ -91,7 +86,7 @@ const Buyer = () => {
             description: "Test Transaction",
             image: "https://example.com/your_logo",
             order_id: data.id,
-            callback_url: "http://localhost:8000/payment/paymentVerification",
+            callback_url: `${API_BASE_URL}/payment/paymentVerification`,
             notes: { "address": "Razorpay Corporate Office" },
             theme: { "color": "orange" }
         };
@@ -106,8 +101,8 @@ const Buyer = () => {
                 const payment_id = response.error.metadata.payment_id;
                 console.log("oooo", order_id);
                 console.log("pay", payment_id);
-                await axios.post(
-                    `http://localhost:8000/payment/paymentFailed/${order_id}/${payment_id}`, {}
+                await axiosInstance.post(
+                    `/payment/paymentFailed/${order_id}/${payment_id}`, {}
                 );
             } catch (error) {
                 console.log("my error", error);

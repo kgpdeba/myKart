@@ -1,29 +1,24 @@
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance.js'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAll } from '../features/ProductSlice'
 
 const DeleteProductModal = ({ setOpenDelModal }) => {
 
-    const accessToken = localStorage.getItem("accessToken")
     const id = useSelector((state) => state.app.id)
 
     const dispatch = useDispatch()
 
     const deleteProduct = async () => {
         try {
-            const res = await axios.delete(`http://localhost:8000/product/delete/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
+            const res = await axiosInstance.delete(`/product/delete/${id}`)
             console.log(res)
             setOpenDelModal(false)
             toast.success("Product deleted successfully")
             dispatch(getAll())
 
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error.response?.data?.message || "Failed to delete product")
         }
     }
 

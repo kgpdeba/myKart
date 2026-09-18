@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance.js';
 import toast from 'react-hot-toast';
 import RegisterButton from './RegisterButton';
 
@@ -8,18 +8,12 @@ function Header() {
     const user = localStorage.getItem("name");
     let status = localStorage.getItem("loginStatus");
     const [state, setState] = useState(status);
-    const accessToken = localStorage.getItem("accessToken")
 
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-
-            const res = await axios.delete('http://localhost:8000/auth/logout', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
+            const res = await axiosInstance.delete('/auth/logout');
             console.log(res)
             setState(false);
             navigate("/login")

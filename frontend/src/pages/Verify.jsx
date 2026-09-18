@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance.js';
 
 function Verify() {
     const [message, setMessage] = useState("");
@@ -11,7 +11,7 @@ function Verify() {
 
     const VerifyMail = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/auth/verify', {
+            const res = await axiosInstance.get('/auth/verify', {
                 headers: {
                     Authorization: `Bearer ${verifyToken}`,
                 }

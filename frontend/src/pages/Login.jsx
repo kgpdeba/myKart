@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance.js";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,7 +20,7 @@ const Login = () => {
     const [toggle, setToggle] = useState(false);
     const onSubmit = async (data) => {
         try {
-            const res = await axios.post("http://localhost:8000/auth/login", data);
+            const res = await axiosInstance.post("/auth/login", data);
             if (res.data.success) {
                 console.log(res.data)
                 localStorage.setItem("accessToken", res.data.accessToken);

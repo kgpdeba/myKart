@@ -1,18 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance.js";
 
 //for buyer
 export const getAllProducts = createAsyncThunk(
   "productSlice/getAllProducts",
   async (params = {}, { rejectWithvalue }) => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      const res = await axios.get(
-        "http://localhost:8000/product/searchSortPaginate",
+      const res = await axiosInstance.get(
+        "/product/searchSortPaginate",
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
           params,
         }
       );
@@ -31,12 +27,7 @@ export const getAll = createAsyncThunk(
   "productSlice/getAll",
   async (_, { rejectWithvalue }) => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      const res = await axios.get("http://localhost:8000/product/getAll", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const res = await axiosInstance.get("/product/getAll");
       console.log("Seller res", res.data);
       return res.data;
     } catch (error) {

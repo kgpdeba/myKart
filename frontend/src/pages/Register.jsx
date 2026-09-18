@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance.js";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -23,7 +23,7 @@ const Register = () => {
     const onError = (errors, e) => console.log(errors, e);
     const onSubmit = async (data) => {
         try {
-            const res = await axios.post(`http://localhost:8000/auth/register/${role}`, data);
+            const res = await axiosInstance.post(`/auth/register/${role}`, data);
             console.log(res)
             if (res.data.success) {
                 console.log(res.data)

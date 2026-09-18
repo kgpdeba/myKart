@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance.js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { productValidateSchema } from '../validators/productValidate';
@@ -13,7 +13,6 @@ const CreateProduct = () => {
     })
 
     const navigate = useNavigate()
-    const accessToken = localStorage.getItem("accessToken")
     const [file, setFile] = useState("")
     const [prevImage, setPrevImage] = useState("");
 
@@ -31,9 +30,8 @@ const CreateProduct = () => {
 
 
         try {
-            const res = await axios.post("http://localhost:8000/product/create", formData, {
+            const res = await axiosInstance.post("/product/create", formData, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "multipart/form-data"
                 }
             })
@@ -42,7 +40,7 @@ const CreateProduct = () => {
             navigate("/seller")
 
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error.response?.data?.message || "Failed to create product")
         }
 
     }
